@@ -1,9 +1,13 @@
 package com.example.session6;
 
+import com.example.session6.dto.BookingDTO;
+import com.example.session6.dto.UserDTO;
 import com.example.session6.model.Booking;
 import com.example.session6.model.Flight;
 import com.example.session6.model.User;
 import com.example.session6.model.UserDetails;
+import com.example.session6.repository.FlightRepository;
+import com.example.session6.repository.UserRepository;
 import com.example.session6.service.impl.BookingServiceImpl;
 import com.example.session6.service.impl.FlightServiceImpl;
 import com.example.session6.service.impl.UserServiceImpl;
@@ -23,12 +27,16 @@ public class Session6SpringApplication {
 	UserServiceImpl userService;
 	FlightServiceImpl flightService;
 	BookingServiceImpl bookingService;
+	UserRepository userRepository;
+	FlightRepository flightRepository;
 
 
-	public Session6SpringApplication(UserServiceImpl userService, FlightServiceImpl flightService, BookingServiceImpl bookingService) {
+	public Session6SpringApplication(UserServiceImpl userService, FlightServiceImpl flightService, BookingServiceImpl bookingService, UserRepository userRepository, FlightRepository flightRepository) {
 		this.userService = userService;
 		this.flightService = flightService;
 		this.bookingService = bookingService;
+		this.userRepository = userRepository;
+		this.flightRepository = flightRepository;
 	}
 
 	public static void main(String[] args) {
@@ -126,9 +134,9 @@ public class Session6SpringApplication {
 	// Finding all users
 	private void option2() {
 
-		List<User> userList = userService.findAll();
+		List<UserDTO> userList = userService.findAll();
 
-		for (User user : userList){
+		for (UserDTO user : userList){
 			System.out.println("Username: " + user.getUsername() + "  ||  Role: " + user.getRole());
 		}
 
@@ -141,12 +149,12 @@ public class Session6SpringApplication {
 		int id;
 		System.out.println("Enter the Id of the user you want to find: ");
 		id = scanner.nextInt();
-		User user = userService.findById(id);
+		UserDTO user = userService.findById(id);
 		System.out.println("Username: " + user.getUsername() + "  ||  Role: " + user.getRole()
-				+ " || First Name: " + user.getUserDetails().getFirstName()
-				+ " || Last Name: " + user.getUserDetails().getLastName()
-				+ " || Email: " + user.getUserDetails().getEmail()
-				+ " || Phone: " + user.getUserDetails().getPhoneNumber());
+				+ " || First Name: " + user.getFirstName()
+				+ " || Last Name: " + user.getLastName()
+				+ " || Email: " + user.getEmail()
+				+ " || Phone: " + user.getPhone());
 	}
 
 	// Deleting User
@@ -167,7 +175,7 @@ public class Session6SpringApplication {
 
 		System.out.println("Enter the id of the user: ");
 		int userId = scanner.nextInt();
-		User user = userService.findById(userId);
+		User user = userRepository.findById(userId);
 		System.out.println("Found user");
 
 		Set<Flight> flights = new HashSet<>();
@@ -177,7 +185,7 @@ public class Session6SpringApplication {
 		for (int i = 0; i < numberOfFlights; i++){
 			System.out.println("Enter the id of the flight: ");
 			int flightId = scanner.nextInt();
-			Flight flight1 = flightService.findById(flightId);
+			Flight flight1 = flightRepository.findById(flightId);
 			flights.add(flight1);
 		}
 
@@ -192,7 +200,7 @@ public class Session6SpringApplication {
 		booking.setFlights(flights);
 		System.out.println("Added user and flight");
 
-		Booking booking1 = bookingService.save(booking);
+		BookingDTO booking1 = bookingService.save(booking);
 		System.out.println("Saved booking with date: " + booking1.getBookingDate());
 	}
 
