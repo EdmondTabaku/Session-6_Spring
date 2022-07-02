@@ -1,6 +1,8 @@
 package com.example.session6.dto;
 
 import java.sql.Date;
+import java.util.List;
+import java.util.Set;
 
 public class FlightDTO {
 
@@ -10,6 +12,11 @@ public class FlightDTO {
     private String status;
     private Date arrivalDate;
     private Date departureDate;
+
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// GETTERS AND SETTERS /////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 
     public String getAirline() {
         return airline;

@@ -3,6 +3,7 @@ package com.example.session6.service.impl;
 import com.example.session6.dto.FlightDTO;
 import com.example.session6.model.Flight;
 import com.example.session6.repository.FlightRepository;
+import com.example.session6.service.BookingService;
 import com.example.session6.service.FlightService;
 import org.springframework.stereotype.Service;
 
@@ -18,27 +19,32 @@ public class FlightServiceImpl implements FlightService {
         this.flightRepository = flightRepository;
     }
 
+    // Saving a flight
     @Override
     public FlightDTO save(Flight flight) {
         return convertToDTO(flightRepository.save(flight));
     }
 
+    // Finding all the flights
     @Override
     public List<FlightDTO> findAll() {
         List<FlightDTO> flightDTOList = flightRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
         return flightDTOList;
     }
 
+    // Finding a flight by id
     @Override
     public FlightDTO findById(int id) {
         return convertToDTO(flightRepository.findById(id));
     }
 
+    // Deleting a flight
     @Override
     public void delete(int id) {
         flightRepository.deleteById(id);
     }
 
+    // Converting from Flight to FlightDTO
     @Override
     public FlightDTO convertToDTO(Flight flight) {
         FlightDTO flightDTO = new FlightDTO();

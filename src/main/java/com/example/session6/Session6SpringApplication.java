@@ -204,6 +204,7 @@ public class Session6SpringApplication {
 		System.out.println("Saved booking with date: " + booking1.getBookingDate());
 	}
 
+
 	// Saving Flight
 	public void option6(){
 

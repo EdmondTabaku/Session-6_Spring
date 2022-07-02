@@ -17,21 +17,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userDetailsRepository = userDetailsRepository;
     }
 
+    // Saving user details
     @Override
     public UserDetails save(UserDetails userDetails) {
         return userDetailsRepository.save(userDetails);
     }
 
+    // Finding all the user details
     @Override
     public List<UserDetails> findAll() {
         return userDetailsRepository.findAll();
     }
 
+    // Finding a user detail by id
     @Override
     public UserDetails findById(int id) {
         return userDetailsRepository.findById(id);
     }
 
+    // Deleting a user datail
     @Override
     public void delete(int id) {
         userDetailsRepository.deleteById(id);

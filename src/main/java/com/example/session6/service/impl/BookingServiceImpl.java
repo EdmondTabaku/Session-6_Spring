@@ -23,28 +23,33 @@ public class BookingServiceImpl implements BookingService {
         this.userService = userService;
     }
 
+    // Saving a booking
     @Override
     public BookingDTO save(Booking booking) {
         return convertToDTO(bookingRepository.save(booking));
     }
 
+    // Finding all the bookings
     @Override
     public List<BookingDTO> findAll() {
         List<BookingDTO> bookingDTOList = bookingRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
         return bookingDTOList;
     }
 
+    // Finding a booking by id
     @Override
     public BookingDTO findById(int id) {
 
         return convertToDTO(bookingRepository.findById(id));
     }
 
+    // Deleting a booking
     @Override
     public void delete(int id) {
         bookingRepository.deleteById(id);
     }
 
+    // Converting from Booking to BookingDTO
     @Override
     public BookingDTO convertToDTO(Booking booking) {
         BookingDTO bookingDTO = new BookingDTO();
