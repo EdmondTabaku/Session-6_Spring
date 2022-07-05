@@ -133,13 +133,80 @@ public class Session6SpringApplication {
 
 	// Finding all users
 	private void option2() {
+		String[] options1 = {"1- Find users without sorting",
+				"2- Find users with sorting - ASC",
+				"3- Find users with sorting - DESC",
+				"4- Find users with pagination",
 
-		List<UserDTO> userList = userService.findAll();
+		};
 
-		for (UserDTO user : userList){
-			System.out.println("Username: " + user.getUsername() + "  ||  Role: " + user.getRole());
+		Scanner scanner = new Scanner(System.in);
+		int i = 0;
+		System.out.println("Choose an option: ");
+
+		while (i < 1 || i > 4){
+			printMenu(options1);
+			try {
+				i = scanner.nextInt();
+				switch (i) {
+					// Finding all the users without order
+					case 1:
+						List<UserDTO> userList = userService.findAll();
+
+						for (UserDTO user : userList) {
+							System.out.println("Username: " + user.getUsername() +
+									"  ||  Role: " + user.getRole());
+						}
+						break;
+
+					// Finding all the users in ascending order by a specified field
+					case 2:
+						System.out.println("Enter the field you want to sort by: ");
+						String field = scanner.next();
+
+						List<UserDTO> userList1 = userService.findAllSortedASC(field);
+
+						for (UserDTO user : userList1) {
+							System.out.println("Username: " + user.getUsername() +
+									"  ||  Role: " + user.getRole());
+						}
+						break;
+
+					// Finding all the users in descending order by a specified field
+					case 3:
+						System.out.println("Enter the field you want to sort by: ");
+						String field1 = scanner.next();
+
+						List<UserDTO> userList2 = userService.findAllSortedDESC(field1);
+
+						for (UserDTO user : userList2) {
+							System.out.println("Username: " + user.getUsername() +
+									"  ||  Role: " + user.getRole());
+						}
+						break;
+
+					// Finding users with pagination
+					case 4:
+						System.out.println("Enter the page size: ");
+						int pageSize = scanner.nextInt();
+
+						System.out.println("Enter the number of the page: ");
+						int next = scanner.nextInt();
+
+						List<UserDTO> userList3 = userService.findAllWithPagination(next, pageSize);
+
+						for (UserDTO user : userList3) {
+							System.out.println("Username: " + user.getUsername() +
+									"  ||  Role: " + user.getRole());
+						}
+						break;
+				}
+			}
+			catch (Exception ex){
+				System.out.println("Please enter an integer value between 1 and " + options1.length);
+				scanner.next();
+			}
 		}
-
 	}
 
 	// Finding user by id

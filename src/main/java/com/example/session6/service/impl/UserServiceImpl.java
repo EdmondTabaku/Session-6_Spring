@@ -4,6 +4,9 @@ import com.example.session6.dto.UserDTO;
 import com.example.session6.model.User;
 import com.example.session6.repository.UserRepository;
 import com.example.session6.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +31,33 @@ public class UserServiceImpl implements UserService {
     // Finding all the users
     @Override
     public List<UserDTO> findAll() {
-        List<UserDTO> userDTOList = userRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<UserDTO> userDTOList = userRepository.findAll()
+                .stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return userDTOList;
+    }
+
+    @Override
+    public List<UserDTO> findAllSortedASC(String field) {
+        List<UserDTO> userDTOList = userRepository.findAll(Sort.by(Sort.Direction.ASC, field))
+                .stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return userDTOList;
+    }
+
+    @Override
+    public List<UserDTO> findAllSortedDESC(String field) {
+        List<UserDTO> userDTOList = userRepository.findAll(Sort.by(Sort.Direction.DESC, field))
+                .stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return userDTOList;
+    }
+
+    @Override
+    public List<UserDTO> findAllWithPagination(int next, int pagesize) {
+        List<UserDTO> userDTOList = userRepository.findAll(PageRequest.of(next, pagesize))
+                .stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
         return userDTOList;
     }
 

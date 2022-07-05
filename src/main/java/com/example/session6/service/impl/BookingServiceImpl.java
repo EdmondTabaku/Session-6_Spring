@@ -33,6 +33,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDTO> findAll() {
         List<BookingDTO> bookingDTOList = bookingRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+
         return bookingDTOList;
     }
 
