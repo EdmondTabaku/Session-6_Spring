@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
         return userDTOList;
     }
 
+    // Finding all users sorted in ascending order
     @Override
     public List<UserDTO> findAllSortedASC(String field) {
         List<UserDTO> userDTOList = userRepository.findAll(Sort.by(Sort.Direction.ASC, field))
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService {
         return userDTOList;
     }
 
+    // Finding all users sorted in descending order
     @Override
     public List<UserDTO> findAllSortedDESC(String field) {
         List<UserDTO> userDTOList = userRepository.findAll(Sort.by(Sort.Direction.DESC, field))
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
         return userDTOList;
     }
 
+    // Finding users with pagination by specifying the page number and the page size
     @Override
     public List<UserDTO> findAllWithPagination(int next, int pagesize) {
         List<UserDTO> userDTOList = userRepository.findAll(PageRequest.of(next, pagesize))
