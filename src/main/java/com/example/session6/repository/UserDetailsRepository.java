@@ -8,11 +8,5 @@ import java.util.List;
 
 @Repository
 public interface UserDetailsRepository extends JpaRepository<UserDetails, Integer> {
-    public UserDetails save(UserDetails userDetails);
 
-    public List<UserDetails> findAll();
-
-    public UserDetails findById(int id);
-
-    public void deleteById(int id);
 }

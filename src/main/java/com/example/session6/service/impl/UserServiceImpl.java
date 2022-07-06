@@ -4,12 +4,12 @@ import com.example.session6.dto.UserDTO;
 import com.example.session6.model.User;
 import com.example.session6.repository.UserRepository;
 import com.example.session6.service.UserService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,8 +67,19 @@ public class UserServiceImpl implements UserService {
     // Finding a user by id
     @Override
     public UserDTO findById(int id) {
-        UserDTO userDTO = convertToDTO(userRepository.findById(id));
-        return userDTO;
+
+        User user = new User();
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()){
+            user = userOptional.get();
+            return convertToDTO(user);
+        }
+        else {
+            return null;
+        }
+
+
     }
 
     // Deleting a user
@@ -83,11 +94,13 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = new UserDTO();
 
         userDTO.setUsername(user.getUsername());
-        userDTO.setFirstName(user.getUserDetails().getFirstName());
-        userDTO.setLastName(user.getUserDetails().getLastName());
-        userDTO.setPhone(user.getUserDetails().getPhoneNumber());
-        userDTO.setEmail(user.getUserDetails().getEmail());
         userDTO.setRole(user.getRole());
+        if (user.getUserDetails() != null){
+            userDTO.setFirstName(user.getUserDetails().getFirstName());
+            userDTO.setLastName(user.getUserDetails().getLastName());
+            userDTO.setPhone(user.getUserDetails().getPhoneNumber());
+            userDTO.setEmail(user.getUserDetails().getEmail());
+        }
 
         return userDTO;
     }

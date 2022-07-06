@@ -2,12 +2,14 @@ package com.example.session6.service.impl;
 
 import com.example.session6.dto.FlightDTO;
 import com.example.session6.model.Flight;
+import com.example.session6.model.User;
 import com.example.session6.repository.FlightRepository;
 import com.example.session6.service.BookingService;
 import com.example.session6.service.FlightService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +37,14 @@ public class FlightServiceImpl implements FlightService {
     // Finding a flight by id
     @Override
     public FlightDTO findById(int id) {
-        return convertToDTO(flightRepository.findById(id));
+        Flight flight = new Flight();
+        Optional<Flight> flightOptional = flightRepository.findById(id);
+
+        if (flightOptional.isPresent()){
+            flight = flightOptional.get();
+        }
+
+        return convertToDTO(flight);
     }
 
     // Deleting a flight

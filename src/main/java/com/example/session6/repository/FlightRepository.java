@@ -8,11 +8,5 @@ import java.util.List;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
-    public Flight save(Flight flight);
 
-    public List<Flight> findAll();
-
-    public Flight findById(int id);
-
-    public void deleteById(int id);
 }
