@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class FlightServiceImpl implements FlightService {
 
-    FlightRepository flightRepository;
+    private final FlightRepository flightRepository;
 
     public FlightServiceImpl(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;

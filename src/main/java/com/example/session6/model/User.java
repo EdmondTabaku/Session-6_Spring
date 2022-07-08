@@ -22,7 +22,7 @@ public class User {
     private String role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private UserDetails userDetails;
+    private UserDetail userDetail;
 
     @OneToMany(
             mappedBy = "user",
@@ -35,12 +35,12 @@ public class User {
     ///////////////////////// GETTERS AND SETTERS /////////////////////////
     ///////////////////////////////////////////////////////////////////////
 
-    public UserDetails getUserDetails() {
-        return userDetails;
+    public UserDetail getUserDetails() {
+        return userDetail;
     }
 
-    public void setUserDetails(UserDetails userDetails) {
-        this.userDetails = userDetails;
+    public void setUserDetails(UserDetail userDetail) {
+        this.userDetail = userDetail;
     }
 
     public Integer getId() {

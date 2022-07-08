@@ -3,6 +3,7 @@ package com.example.session6.service.impl;
 import com.example.session6.dto.UserDTO;
 import com.example.session6.model.User;
 import com.example.session6.repository.UserRepository;
+import com.example.session6.service.UserDetailService;
 import com.example.session6.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,17 +16,18 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserDetailService userDetailService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserDetailService userDetailService) {
         this.userRepository = userRepository;
+        this.userDetailService = userDetailService;
     }
 
     // Saving user
     @Override
     public UserDTO save(User user) {
-        UserDTO userDTO = convertToDTO(userRepository.save(user));
-        return userDTO;
+        return convertToDTO(userRepository.save(user));
     }
 
     // Finding all the users
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findById(int id) {
 
-        User user = new User();
+        User user;
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()){
@@ -95,11 +97,12 @@ public class UserServiceImpl implements UserService {
 
         userDTO.setUsername(user.getUsername());
         userDTO.setRole(user.getRole());
+
         if (user.getUserDetails() != null){
-            userDTO.setFirstName(user.getUserDetails().getFirstName());
-            userDTO.setLastName(user.getUserDetails().getLastName());
-            userDTO.setPhone(user.getUserDetails().getPhoneNumber());
-            userDTO.setEmail(user.getUserDetails().getEmail());
+            userDTO.setUserDetail(userDetailService.convertToDTO(user.getUserDetails()));
+        }
+        else {
+            userDTO.setUserDetail(null);
         }
 
         return userDTO;

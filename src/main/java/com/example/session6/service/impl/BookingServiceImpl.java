@@ -2,6 +2,7 @@ package com.example.session6.service.impl;
 
 import com.example.session6.dto.BookingDTO;
 import com.example.session6.model.Booking;
+import com.example.session6.model.User;
 import com.example.session6.repository.BookingRepository;
 import com.example.session6.service.BookingService;
 import com.example.session6.service.FlightService;
@@ -9,13 +10,14 @@ import com.example.session6.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
-    BookingRepository bookingRepository;
-    FlightService flightService;
-    UserService userService;
+    private final BookingRepository bookingRepository;
+    private final FlightService flightService;
+    private final UserService userService;
 
     public BookingServiceImpl(BookingRepository bookingRepository, FlightService flightService, UserService userService) {
         this.bookingRepository = bookingRepository;
@@ -41,7 +43,17 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDTO findById(int id) {
 
-        return convertToDTO(bookingRepository.findById(id));
+        Booking booking;
+        Optional<Booking> bookingOptional = bookingRepository.findById(id);
+
+        if (bookingOptional.isPresent()){
+            booking = bookingOptional.get();
+            return convertToDTO(booking);
+        }
+        else {
+            return null;
+        }
+
     }
 
     // Deleting a booking
