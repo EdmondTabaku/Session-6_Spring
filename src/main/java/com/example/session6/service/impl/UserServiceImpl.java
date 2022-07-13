@@ -14,6 +14,7 @@ import com.example.session6.service.UserDetailService;
 import com.example.session6.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,15 +31,15 @@ public class UserServiceImpl implements UserService {
     private final UserDetailService userDetailService;
     private final RoleRepository roleRepository;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
     private final UserDetailsRepository userDetailsRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserDetailService userDetailService, RoleRepository roleRepository, RoleService roleService, PasswordEncoder passwordEncoder, UserDetailsRepository userDetailsRepository) {
+
+
+    public UserServiceImpl(UserRepository userRepository, UserDetailService userDetailService, RoleRepository roleRepository, RoleService roleService, UserDetailsRepository userDetailsRepository) {
         this.userRepository = userRepository;
         this.userDetailService = userDetailService;
         this.roleRepository = roleRepository;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
         this.userDetailsRepository = userDetailsRepository;
     }
 
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService {
     // Saving user
     @Override
     public UserDTO save(UserDTO userDTO) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user;
         UserDetail userDetail;
         Collection<Role> roles = new ArrayList<>();
@@ -58,10 +60,13 @@ public class UserServiceImpl implements UserService {
                 throw new RuntimeException("Id invalid");
             }
             userDetail = userDetailsRepository.findByUserId(user.getId());
-            for (RoleDTO role : userDTO.getRoles()) {
-                Role role1 = roleRepository.findByName(role.getName());
-                roles.add(role1);
+            if (userDTO.getRoles() != null){
+                for (RoleDTO role : userDTO.getRoles()) {
+                    Role role1 = roleRepository.findByName(role.getName());
+                    roles.add(role1);
+                }
             }
+
         }else {
             user = new User();
             userDetail = new UserDetail();
@@ -73,11 +78,13 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRoles(roles);
 
-        userDetail.setFirstName(userDTO.getUserDetail().getFirstName());
-        userDetail.setLastName(userDTO.getUserDetail().getLastName());
-        userDetail.setEmail(userDTO.getUserDetail().getEmail());
-        userDetail.setPhoneNumber(userDTO.getUserDetail().getPhone());
-        userDetail.setUser(user);
+        if (userDTO.getUserDetail() != null){
+            userDetail.setFirstName(userDTO.getUserDetail().getFirstName());
+            userDetail.setLastName(userDTO.getUserDetail().getLastName());
+            userDetail.setEmail(userDTO.getUserDetail().getEmail());
+            userDetail.setPhoneNumber(userDTO.getUserDetail().getPhone());
+            userDetail.setUser(user);
+        }
 
         user.setUserDetails(userDetail);
 
