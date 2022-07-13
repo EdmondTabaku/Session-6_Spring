@@ -23,7 +23,28 @@ public class FlightServiceImpl implements FlightService {
 
     // Saving a flight
     @Override
-    public FlightDTO save(Flight flight) {
+    public FlightDTO save(FlightDTO flightDTO) {
+
+        Flight flight;
+
+        if (flightDTO.getId() != null) {
+            Optional<Flight> flightOptional = flightRepository.findById(flightDTO.getId());
+            if (flightOptional.isPresent()) {
+                flight = flightOptional.get();
+            } else {
+                throw new RuntimeException("Id invalid");
+            }
+        } else {
+            flight = new Flight();
+        }
+
+        flight.setAirline(flightDTO.getAirline());
+        flight.setArrivalDate(flightDTO.getArrivalDate());
+        flight.setDepartureDate(flightDTO.getDepartureDate());
+        flight.setOrigin(flightDTO.getOrigin());
+        flight.setDestination(flightDTO.getDestination());
+        flight.setStatus(flightDTO.getOrigin());
+
         return convertToDTO(flightRepository.save(flight));
     }
 
@@ -40,7 +61,7 @@ public class FlightServiceImpl implements FlightService {
         Flight flight = new Flight();
         Optional<Flight> flightOptional = flightRepository.findById(id);
 
-        if (flightOptional.isPresent()){
+        if (flightOptional.isPresent()) {
             flight = flightOptional.get();
         }
 

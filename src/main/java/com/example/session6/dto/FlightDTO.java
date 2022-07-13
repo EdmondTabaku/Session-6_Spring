@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class FlightDTO {
 
+    private Integer id;
     private String airline;
     private String destination;
     private String origin;
@@ -17,6 +18,15 @@ public class FlightDTO {
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////// GETTERS AND SETTERS /////////////////////////
     ///////////////////////////////////////////////////////////////////////
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getAirline() {
         return airline;

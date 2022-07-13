@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class BookingDTO {
 
+    private Integer id;
     private String status;
     private Date bookingDate;
     private UserDTO user;
@@ -15,6 +16,15 @@ public class BookingDTO {
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////// GETTERS AND SETTERS /////////////////////////
     ///////////////////////////////////////////////////////////////////////
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getStatus() {
         return status;

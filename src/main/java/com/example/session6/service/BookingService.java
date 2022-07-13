@@ -8,7 +8,7 @@ import com.example.session6.model.User;
 import java.util.List;
 
 public interface BookingService {
-    public BookingDTO save(Booking booking);
+    public BookingDTO save(BookingDTO bookingDTO);
 
     public List<BookingDTO> findAll();
 

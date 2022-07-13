@@ -1,14 +1,24 @@
 package com.example.session6.service.impl;
 
+import com.example.session6.dto.RoleDTO;
 import com.example.session6.dto.UserDTO;
+import com.example.session6.model.Flight;
+import com.example.session6.model.Role;
 import com.example.session6.model.User;
+import com.example.session6.model.UserDetail;
+import com.example.session6.repository.RoleRepository;
+import com.example.session6.repository.UserDetailsRepository;
 import com.example.session6.repository.UserRepository;
+import com.example.session6.service.RoleService;
 import com.example.session6.service.UserDetailService;
 import com.example.session6.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,15 +28,59 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserDetailService userDetailService;
+    private final RoleRepository roleRepository;
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
+    private final UserDetailsRepository userDetailsRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserDetailService userDetailService) {
+    public UserServiceImpl(UserRepository userRepository, UserDetailService userDetailService, RoleRepository roleRepository, RoleService roleService, PasswordEncoder passwordEncoder, UserDetailsRepository userDetailsRepository) {
         this.userRepository = userRepository;
         this.userDetailService = userDetailService;
+        this.roleRepository = roleRepository;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+        this.userDetailsRepository = userDetailsRepository;
     }
+
 
     // Saving user
     @Override
-    public UserDTO save(User user) {
+    public UserDTO save(UserDTO userDTO) {
+        User user;
+        UserDetail userDetail;
+        Collection<Role> roles = new ArrayList<>();
+
+        if (userDTO.getId() != null){
+            Optional<User> userOptional = userRepository.findById(userDTO.getId());
+            if (userOptional.isPresent()) {
+                user = userOptional.get();
+            } else {
+                throw new RuntimeException("Id invalid");
+            }
+            userDetail = userDetailsRepository.findByUserId(user.getId());
+            for (RoleDTO role : userDTO.getRoles()) {
+                Role role1 = roleRepository.findByName(role.getName());
+                roles.add(role1);
+            }
+        }else {
+            user = new User();
+            userDetail = new UserDetail();
+            Role guest = roleRepository.findByName("ROLE_GUEST");
+            roles.add(guest);
+        }
+
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRoles(roles);
+
+        userDetail.setFirstName(userDTO.getUserDetail().getFirstName());
+        userDetail.setLastName(userDTO.getUserDetail().getLastName());
+        userDetail.setEmail(userDTO.getUserDetail().getEmail());
+        userDetail.setPhoneNumber(userDTO.getUserDetail().getPhone());
+        userDetail.setUser(user);
+
+        user.setUserDetails(userDetail);
+
         return convertToDTO(userRepository.save(user));
     }
 
@@ -73,15 +127,30 @@ public class UserServiceImpl implements UserService {
         User user;
         Optional<User> userOptional = userRepository.findById(id);
 
-        if (userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             user = userOptional.get();
             return convertToDTO(user);
-        }
-        else {
+        } else {
             return null;
         }
 
+    }
 
+    // Adding a role to a user
+    @Override
+    public Boolean addRoleToUser(String username, String roleName) {
+        try {
+            User user = userRepository.findByUsername(username);
+            Role role = roleRepository.findByName(roleName);
+            if (role != null && user != null) {
+                user.getRoles().add(role);
+                userRepository.save(user);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Deleting a user
@@ -96,15 +165,16 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = new UserDTO();
 
         userDTO.setUsername(user.getUsername());
-        userDTO.setRole(user.getRole());
+        userDTO.setRoles(user.getRoles().stream().map(roleService::convertToDTO).collect(Collectors.toList()));
 
-        if (user.getUserDetails() != null){
+        if (user.getUserDetails() != null) {
             userDTO.setUserDetail(userDetailService.convertToDTO(user.getUserDetails()));
-        }
-        else {
+        } else {
             userDTO.setUserDetail(null);
         }
 
         return userDTO;
     }
+
+
 }

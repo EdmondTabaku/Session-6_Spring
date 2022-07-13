@@ -1,0 +1,20 @@
+package com.example.session6.dto;
+
+public class RoleDTO {
+
+    private String name;
+
+
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////// GETTERS AND SETTERS /////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

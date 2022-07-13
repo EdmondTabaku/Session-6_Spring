@@ -1,10 +1,15 @@
 package com.example.session6.dto;
 
+import com.example.session6.model.Role;
+
+import java.util.List;
+
 public class UserDTO {
 
+    private Integer id;
     private String username;
-    private String role;
-
+    private String password;
+    private List<RoleDTO> roles;
     private UserDetailDTO userDetail;
 
 
@@ -12,6 +17,15 @@ public class UserDTO {
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////// GETTERS AND SETTERS /////////////////////////
     ///////////////////////////////////////////////////////////////////////
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -21,12 +35,20 @@ public class UserDTO {
         this.username = username;
     }
 
-    public String getRole() {
-        return role;
+    public String getPassword() {
+        return password;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleDTO> roles) {
+        this.roles = roles;
     }
 
     public UserDetailDTO getUserDetail() {
