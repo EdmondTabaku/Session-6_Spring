@@ -4,6 +4,9 @@ import com.example.session6.security.JwtRequest;
 import com.example.session6.security.JwtResponse;
 import com.example.session6.security.MyUserDetails;
 import com.example.session6.security.JwtUtil;
+import com.example.session6.service.impl.BookingServiceImpl;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +22,7 @@ import java.util.Objects;
 @RequestMapping("/login")
 public class AuthenticationController {
 
+    private static final Logger logger = LogManager.getLogger(AuthenticationController.class);
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
     private final MyUserDetails jwtInMemoryUserDetailsService;
@@ -41,6 +45,7 @@ public class AuthenticationController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
+        logger.info("User logged in");
         return ResponseEntity.ok(new JwtResponse(token));
     }
 

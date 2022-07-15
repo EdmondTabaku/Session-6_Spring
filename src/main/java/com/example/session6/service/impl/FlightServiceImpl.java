@@ -6,6 +6,8 @@ import com.example.session6.model.User;
 import com.example.session6.repository.FlightRepository;
 import com.example.session6.service.BookingService;
 import com.example.session6.service.FlightService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class FlightServiceImpl implements FlightService {
+
+    private static final Logger logger = LogManager.getLogger(FlightServiceImpl.class);
 
     private final FlightRepository flightRepository;
 
@@ -32,6 +36,7 @@ public class FlightServiceImpl implements FlightService {
             if (flightOptional.isPresent()) {
                 flight = flightOptional.get();
             } else {
+                logger.error("Flight id is invalid");
                 throw new RuntimeException("Id invalid");
             }
         } else {
@@ -45,13 +50,18 @@ public class FlightServiceImpl implements FlightService {
         flight.setDestination(flightDTO.getDestination());
         flight.setStatus(flightDTO.getOrigin());
 
+        logger.info("Saved flight");
+
         return convertToDTO(flightRepository.save(flight));
     }
 
     // Finding all the flights
     @Override
     public List<FlightDTO> findAll() {
-        List<FlightDTO> flightDTOList = flightRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<FlightDTO> flightDTOList = flightRepository.findAll()
+                .stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+        logger.info("Found all the flights");
         return flightDTOList;
     }
 
@@ -71,7 +81,9 @@ public class FlightServiceImpl implements FlightService {
     // Deleting a flight
     @Override
     public void delete(int id) {
+
         flightRepository.deleteById(id);
+        logger.info("Deleted flight with id: " + id);
     }
 
     // Converting from Flight to FlightDTO

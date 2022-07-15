@@ -1,5 +1,8 @@
-package com.example.session6.security;
+package com.example.session6.config;
 
+import com.example.session6.security.JwtAuthenticationEntryPoint;
+import com.example.session6.security.JwtTokenFilter;
+import com.example.session6.security.MyUserDetails;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,7 +51,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/login").permitAll().
+                .authorizeRequests()
+                .antMatchers("/login",
+                        "/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/swagger-ui/**").permitAll().
                         anyRequest().authenticated().and().
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

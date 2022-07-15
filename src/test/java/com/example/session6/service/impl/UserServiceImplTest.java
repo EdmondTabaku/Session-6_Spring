@@ -67,26 +67,30 @@ class UserServiceImplTest {
 
     @Test
     void updateReturnsUserDtoWhenUserUpdated() {
-        UserDTO userDTO = new UserDTO();
-        User user = new User();
         Role role = new Role();
         role.setName("ROLE_GUEST");
+
+        UserDTO userDTO = new UserDTO();
         userDTO.setUsername("username");
         userDTO.setPassword("pass");
         userDTO.setId(1);
 
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
-        user.setId(userDTO.getId());
+        User userfromdb = new User();
+        userfromdb.setUsername("USER");
+        userfromdb.setPassword("pass");
+        userfromdb.setId(1);
 
-        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(userfromdb));
+
         Mockito.when(userDetailsRepository.findByUserId(any())).thenReturn(new UserDetail());
-        Mockito.when(userRepository.save(any())).thenReturn(user);
         Mockito.when(roleRepository.findByName(any())).thenReturn(role);
+
+        Mockito.when(userRepository.save(any())).thenReturn(userfromdb);
+
 
         UserDTO actualUserDTO = userService.save(userDTO);
 
-        assertEquals(user.getUsername(), actualUserDTO.getUsername());
+        assertEquals(userDTO.getUsername(), actualUserDTO.getUsername());
 
     }
 

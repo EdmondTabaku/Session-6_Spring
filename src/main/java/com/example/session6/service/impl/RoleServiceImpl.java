@@ -6,6 +6,8 @@ import com.example.session6.model.Role;
 import com.example.session6.model.User;
 import com.example.session6.repository.RoleRepository;
 import com.example.session6.service.RoleService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
+
+    private static final Logger logger = LogManager.getLogger(RoleServiceImpl.class);
 
     private final RoleRepository roleRepository;
 
@@ -28,6 +32,7 @@ public class RoleServiceImpl implements RoleService {
             role = new Role();
         }
         role.setName(roleDTO.getName());
+        logger.info("Saved user with name " + role.getName());
         return convertToDTO(roleRepository.save(role));
     }
 
@@ -36,6 +41,7 @@ public class RoleServiceImpl implements RoleService {
         List<RoleDTO> roleDTOList = roleRepository.findAll()
                 .stream().map(this::convertToDTO)
                 .collect(Collectors.toList());
+        logger.info("Found all the roles");
         return roleDTOList;
     }
 
@@ -46,9 +52,11 @@ public class RoleServiceImpl implements RoleService {
 
         if (roleOptional.isPresent()){
             role = roleOptional.get();
+            logger.info("Found role with id: " + id);
             return convertToDTO(role);
         }
         else {
+            logger.warn("Role with id: " + id + " not found");
             return null;
         }
     }
@@ -56,6 +64,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(int id) {
         roleRepository.deleteById(id);
+        logger.info("Deleted user with id: " + id);
     }
 
     @Override

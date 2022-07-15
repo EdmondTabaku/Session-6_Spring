@@ -11,6 +11,8 @@ import com.example.session6.repository.UserRepository;
 import com.example.session6.service.BookingService;
 import com.example.session6.service.FlightService;
 import com.example.session6.service.UserService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
+
+    private static final Logger logger = LogManager.getLogger(BookingServiceImpl.class);
     private final BookingRepository bookingRepository;
     private final FlightService flightService;
     private final UserService userService;
@@ -48,6 +52,7 @@ public class BookingServiceImpl implements BookingService {
                 booking = bookingOptional.get();
 
             } else {
+                logger.error("Booking id is invalid");
                 throw new RuntimeException("Id invalid");
             }
         } else {
@@ -60,6 +65,8 @@ public class BookingServiceImpl implements BookingService {
                 Flight flight = flightOptional.get();
                 flights.add(flight);
             } else {
+
+                logger.error("Flight id is invalid");
                 throw new RuntimeException("Flight Id invalid");
             }
 
@@ -69,6 +76,7 @@ public class BookingServiceImpl implements BookingService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
         } else {
+            logger.error("User id is invalid");
             throw new RuntimeException("User Id invalid");
         }
 
@@ -76,6 +84,8 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(bookingDTO.getStatus());
         booking.setFlights(flights);
         booking.setUser(user);
+
+        logger.info("Saved booking with booking date " + booking.getBookingDate());
 
         return convertToDTO(bookingRepository.save(booking));
     }
@@ -85,6 +95,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDTO> findAll() {
         List<BookingDTO> bookingDTOList = bookingRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
 
+        logger.info("Found all the bookings");
         return bookingDTOList;
     }
 
@@ -97,8 +108,10 @@ public class BookingServiceImpl implements BookingService {
 
         if (bookingOptional.isPresent()) {
             booking = bookingOptional.get();
+            logger.info("Found booking with id: " + id);
             return convertToDTO(booking);
         } else {
+            logger.warn("Booking with id: " + id + " not found");
             return null;
         }
 
@@ -108,6 +121,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void delete(int id) {
         bookingRepository.deleteById(id);
+        logger.info("Deleted booking with id: " + id);
     }
 
     // Converting from Booking to BookingDTO

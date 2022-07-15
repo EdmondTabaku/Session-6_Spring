@@ -2,7 +2,6 @@ package com.example.session6.service.impl;
 
 import com.example.session6.dto.RoleDTO;
 import com.example.session6.dto.UserDTO;
-import com.example.session6.model.Flight;
 import com.example.session6.model.Role;
 import com.example.session6.model.User;
 import com.example.session6.model.UserDetail;
@@ -12,6 +11,8 @@ import com.example.session6.repository.UserRepository;
 import com.example.session6.service.RoleService;
 import com.example.session6.service.UserDetailService;
 import com.example.session6.service.UserService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final UserDetailService userDetailService;
     private final RoleRepository roleRepository;
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService {
     // Saving user
     @Override
     public UserDTO save(UserDTO userDTO) {
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user;
         UserDetail userDetail;
@@ -57,6 +60,7 @@ public class UserServiceImpl implements UserService {
             if (userOptional.isPresent()) {
                 user = userOptional.get();
             } else {
+                logger.error("User id is invalid");
                 throw new RuntimeException("Id invalid");
             }
             userDetail = userDetailsRepository.findByUserId(user.getId());
@@ -88,6 +92,8 @@ public class UserServiceImpl implements UserService {
 
         user.setUserDetails(userDetail);
 
+        logger.info("Saved user with username " + user.getUsername());
+
         return convertToDTO(userRepository.save(user));
     }
 
@@ -97,6 +103,7 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> userDTOList = userRepository.findAll()
                 .stream().map(this::convertToDTO)
                 .collect(Collectors.toList());
+        logger.info("Found all the users");
         return userDTOList;
     }
 
@@ -136,8 +143,10 @@ public class UserServiceImpl implements UserService {
 
         if (userOptional.isPresent()) {
             user = userOptional.get();
+            logger.info("Found user with id: " + id);
             return convertToDTO(user);
         } else {
+            logger.warn("User with id: " + id + " not found");
             return null;
         }
 
@@ -152,10 +161,12 @@ public class UserServiceImpl implements UserService {
             if (role != null && user != null) {
                 user.getRoles().add(role);
                 userRepository.save(user);
+                logger.info("Added role " + role.getName() + " to user with username " + user.getUsername());
                 return true;
             }
             return false;
         } catch (Exception e) {
+            logger.error("Unable to add role to user. Error: " + e);
             return false;
         }
     }
@@ -163,7 +174,9 @@ public class UserServiceImpl implements UserService {
     // Deleting a user
     @Override
     public void delete(int id) {
+
         userRepository.deleteById(id);
+        logger.info("Deleted user with id: " + id);
     }
 
     // Converting from User to UserDTO
