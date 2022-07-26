@@ -12,9 +12,7 @@ import com.example.session6.service.UserDetailService;
 import com.example.session6.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
